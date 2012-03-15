@@ -4,7 +4,7 @@
 //   $ g++ -I ~/thirdparty/boost boost_example.cpp -o boost_example
 //
 // To run:
-//   $ echo 1 2 3 | ./example
+//   $ echo 1 2 3 | ./boost_example
 //
 // Reference:
 // http://www.boost.org/doc/libs/1_49_0/more/getting_started/unix-variants.html
