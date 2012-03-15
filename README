@@ -1,5 +1,77 @@
 README
 
+
+2012-03-14 Wed
+$ dpkg --get-selections
+$ dpkg -s <packagename>  ;; Info about installed package.
+
+Application           DebPackage
+-----------           ----------
+a2ps                  a2ps
+Chrome                ???
+git                   git-core
+                      git-gui
+                      git-doc
+gvim                  vim-gnome
+Exuberant C-tags      exuberant-ctags
+gnuplot               gnuplot
+graphviz              graphviz
+Erlang                erlang-base
+Firefox               firefox
+Subversion            subversion
+valgrind              valgrind
+
+grin
+
+Boost C++ libraries   
+
+Get and build LLVM/clang on Linux:
+
+LLVM:
+$ cd ~/llvm
+$ svn co http://llvm.org/svn/llvm-project/llvm/trunk llvm
+
+clang:
+$ cd ~/llvm/llvm/tools
+$ svn co http://llvm.org/svn/llvm-project/cfe/trunk clang
+
+compiler-rt:
+$ cd ~/llvm/llvm/projects
+$ svn co http://llvm.org/svn/llvm-project/compiler-rt/trunk compiler-rt
+
+libc++:
+$ cd ~/llvm/llvm/projects
+$ svn co http://llvm.org/svn/llvm-project/libcxx/trunk libcxx
+----
+$ cd ~/llvm/llvm/projects/libcxx/lib
+$ ./buildit    ;; This builds ~/llvm/llvm/tools/libcxx/lib/libc++.so.1.0
+$ cd /usr/lib
+$ sudo ln -sf ~/llvm/llvm/tools/libcxx/lib/libc++.so.1.0 libc++.so.1.0
+$ sudo ln -sf libc++.so.1.0 libc++.so
+$ cd /usr/include/c++
+$ sudo ln -sf ~/llvm/llvm/tools/libcxx/include v1
+
+libc++abi:
+$ cd ~/llvm/llvm/projects
+$ svn co http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi
+
+Configure and build:
+First time:
+$ cd ~/llvm
+$ mkdir build ; cd build
+$ ../llvm/configure
+$ make
+
+Thereafter:
+$ cd ~/llvm/build
+$ make update
+$ make
+
+Run clang:
+$ cd ~/basic
+$ clang++ -std=c++0x -stdlib=libc++ hello.cpp
+
+
 2012-03-13 Tue
 Create this git repository.
 
