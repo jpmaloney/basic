@@ -95,7 +95,7 @@ $ ./boost_example_lib
 Get and build LLVM/clang on Linux:
 
 LLVM:
-$ cd ~/llvm
+$ mkdir ~/llvm ; cd ~/llvm
 $ svn co http://llvm.org/svn/llvm-project/llvm/trunk llvm
 
 clang:
