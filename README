@@ -12,6 +12,7 @@ git                   git-core
                       git-gui
                       git-doc
 gvim                  vim-gnome
+g++                   g++
 Exuberant C-tags      exuberant-ctags
 gnuplot               gnuplot
 graphviz              graphviz
@@ -40,12 +41,24 @@ $ ln -s ~/basic/vimrc ~/.vimrc
 ---
 
 Install grin:
+Reference: http://pypi.python.org/pypi/grin
 $ sudo apt-get install python-setuptools
 $ sudo easy-install grin
 
 ---
 
-Boost C++ libraries   
+Boost C++ libraries
+
+Download the Boost C++ libraries:
+$ cd ~
+$ mkdir -p ~/thirdparty/boost_versions ; cd ~/thirdparty/boost_versions
+$ wget http://downloads.sourceforge.net/project/boost/boost/1.49.0/boost_1_49_0.tar.bz2
+$ tar -xvf boost_1_49_0.tar.bz2
+
+
+Make a symbolic link to the Boost C++ libraries:
+$ cd ~/thirdparty
+$ ln -s ~/thirdparty/boost_versions/boost_1_49_0 ~/thirdparty/boost
 
 ---
 
