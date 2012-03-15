@@ -49,16 +49,46 @@ $ sudo easy-install grin
 
 Boost C++ libraries
 
+Install some packages:
+Library               DebPackage
+-------               ----------
+bzip2                 libbz2-dev
+python-dev            python-dev
+
 Download the Boost C++ libraries:
 $ cd ~
 $ mkdir -p ~/thirdparty/boost_versions ; cd ~/thirdparty/boost_versions
 $ wget http://downloads.sourceforge.net/project/boost/boost/1.49.0/boost_1_49_0.tar.bz2
 $ tar -xvf boost_1_49_0.tar.bz2
 
-
 Make a symbolic link to the Boost C++ libraries:
 $ cd ~/thirdparty
 $ ln -s ~/thirdparty/boost_versions/boost_1_49_0 ~/thirdparty/boost
+
+Verify that Boost header files are usable (after "git clone" above):
+$ cd ~/basic/tests
+$ g++ -I ~/thirdparty/boost boost_example.cpp -o boost_example
+$ echo 1 2 3 | ./boost_example
+
+Build custom binaries:
+$ cd ~/thirdparty/boost_versions/boost_1_49_0/tools/build/v2
+$ ./bootstrap.sh
+;; Note: Must use ${HOME} rather than ~.
+$ ./b2 install --prefix=${HOME}/thirdparty/boost_versions/boost_1_49_0_boost_build
+$ ln -s ~/thirdparty/boost_versions/boost_1_49_0_boost_build boost_build
+;; Add b2 and bjam to the PATH env var:
+$ vim ~/.bashrc
+;; Add this line to ~/.bashrc:
+export PATH=${PATH}:${HOME}/thirdparty/boost_build/bin
+
+$ cd ~/thirdparty/boost_versions/boost_1_49_0
+$ b2 toolset=gcc stage
+
+Verify that Boost binary libraries are usable (after "git clone" and "b2 ..." above):
+$ cd ~/basic/tests
+$ g++ -I ~/thirdparty/boost boost_example_lib.cpp -o boost_example_lib \
+~/thirdparty/boost/stage/lib/libboost_regex.a
+$ ./boost_example_lib
 
 ---
 
