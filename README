@@ -106,37 +106,43 @@ compiler-rt:
 $ cd ~/llvm/llvm/projects
 $ svn co http://llvm.org/svn/llvm-project/compiler-rt/trunk compiler-rt
 
-libc++:
-$ cd ~/llvm/llvm/projects
-$ svn co http://llvm.org/svn/llvm-project/libcxx/trunk libcxx
-----
-$ cd ~/llvm/llvm/projects/libcxx/lib
-$ ./buildit    ;; This builds ~/llvm/llvm/tools/libcxx/lib/libc++.so.1.0
-$ cd /usr/lib
-$ sudo ln -sf ~/llvm/llvm/tools/libcxx/lib/libc++.so.1.0 libc++.so.1.0
-$ sudo ln -sf libc++.so.1.0 libc++.so
-$ cd /usr/include/c++
-$ sudo ln -sf ~/llvm/llvm/tools/libcxx/include v1
-
 libc++abi:
-$ cd ~/llvm/llvm/projects
+$ cd ~/llvm/llvm/tools
 $ svn co http://llvm.org/svn/llvm-project/libcxxabi/trunk libcxxabi
+
+libc++ (must be after libc++abi?):
+$ cd ~/llvm/llvm/tools
+$ svn co http://llvm.org/svn/llvm-project/libcxx/trunk libcxx
+
+Create symbolic links to libc++ headers and binaries:
+$ sudo ln -sf ~/llvm/llvm/tools/libcxx/include /usr/include/c++/v1
+$ sudo ln -sf ~/llvm/llvm/tools/libcxxabi/include/cxxabi.h /usr/include/c++/v1/cxxabi.h
+$ cd ~/llvm/llvm/tools/libcxx/lib
+$ ./buildit    ;; This builds ~/llvm/llvm/tools/libcxx/lib/libc++.so.1.0
+$ sudo ln -sf ~/llvm/llvm/tools/libcxx/lib/libc++.so.1.0 /usr/lib/libc++.so.1.0
+$ sudo ln -sf /usr/lib/libc++.so.1.0 /usr/lib/libc++.so.1
+$ sudo ln -sf /usr/lib/libc++.so.1 /usr/lib/libc++.so
 
 Configure and build:
 First time:
 $ cd ~/llvm
 $ mkdir build ; cd build
-$ ../llvm/configure
-$ make
+$ ../llvm/configure --enable-optimized
+$ make -j4  ;; -j4 means "use 4 jobs".
+;; Add LLVM/clang to PATH env var:
+$ vim ~/.bashrc
+;; Add this line to ~/.bashrc:
+export PATH=${PATH}:${HOME}/llvm/build/Release+Asserts/bin
 
 Thereafter:
 $ cd ~/llvm/build
 $ make update
-$ make
+$ make -j4
 
 Run clang:
 $ cd ~/basic
-$ clang++ -std=c++0x -stdlib=libc++ hello.cpp
+;;$ clang++ -std=c++0x -stdlib=libc++ hello.cpp
+$ clang++ -std=c++0x -stdlib=libc++ hello.cpp -lstdc++
 
 ---
 
