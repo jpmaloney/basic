@@ -1,6 +1,8 @@
 *.out
 *.swp
 
+bin/
+
 boost_example
 boost_example_lib
 

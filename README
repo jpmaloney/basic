@@ -19,6 +19,7 @@ graphviz              graphviz
 Erlang                erlang-base
 Firefox               firefox
 Subversion            subversion
+tree                  tree
 valgrind              valgrind
 
 ---
@@ -89,6 +90,9 @@ $ cd ~/basic/tests
 $ g++ -I ~/thirdparty/boost boost_example_lib.cpp -o boost_example_lib \
 ~/thirdparty/boost/stage/lib/libboost_regex.a
 $ ./boost_example_lib
+
+Setup Boost.Build:
+$ ln -sf ~/basic/user-config.jam ~/user-config.jam
 
 ---
 
