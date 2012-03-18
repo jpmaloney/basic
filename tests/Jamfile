@@ -4,15 +4,5 @@
 # (See accompanying file LICENSE_2_0 or copy at
 # http://www.apache.org/licenses/LICENSE-2.0)
 
-using gcc 
-    :      # std0x
-    :
-    : <cxxflags>-std=gnu++0x
-    ;
-
-using clang
-    :
-    :
-    : <cxxflags>-std=c++0x -stdlib=libc++
-    ;
+exe test_contexts : test_contexts.cpp ;
 
