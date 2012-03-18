@@ -101,9 +101,9 @@ std::ostream& operator<<( std::ostream& os, ucontext_t const& rhs )
 {
     os << "("
        << "uc_link="      << std::hex << (void*)rhs.uc_link
-       << " uc_sigmask="  << std::hex << rhs.uc_sigmask
-       << " uc_stack="    << std::hex << rhs.uc_stack
-       << " uc_mcontext=" << std::hex << rhs.uc_mcontext
+       << " uc_sigmask="  << rhs.uc_sigmask
+       << " uc_stack="    << rhs.uc_stack
+       << " uc_mcontext=" << rhs.uc_mcontext
        << ")"
        ;
     return os;
