@@ -151,8 +151,8 @@ void test( int argc, char* argv[] )
 {
     cout << "test1::test: enter" << endl;
 
-    // Note: Stack size of 1024 is too low for x86-64.
-    enum { kStackSize = 2048U };
+    // Note: Stack size of 2048 is too low for x86-64 and clang++ 3.1.
+    enum { kStackSize = 4096U };
     char stack_func1[ kStackSize ];
     char stack_func2[ kStackSize ];
 
