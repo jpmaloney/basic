@@ -4,7 +4,8 @@
 // http://linux.die.net/man/3/makecontext
 // http://linux.die.net/man/2/setcontext
 // http://linux.die.net/man/2/sigaltstack
-// http://linux.die.net/man/3/strerror
+// http://linux.die.net/man/3/errno
+// http://linux.die.net/man/3/strerror_r
 // http://pubs.opengroup.org/onlinepubs/7908799/xsh/signal.h.html
 //
 // Copyright 2012 John P. Maloney
@@ -13,8 +14,9 @@
 // (See accompanying file LICENSE_2_0 or copy at
 // http://www.apache.org/licenses/LICENSE-2.0)
 //
-#include <string.h>
 #include <ucontext.h>
+#include <cerrno>
+#include <cstring>
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
@@ -31,12 +33,30 @@ namespace
 
 std::string string_from_errno( int e )
 {
-    enum { kBufSize = 128U };
+    enum { kBufSize = 256U }; // TODO: Choose this value more wisely.
     char buf[ kBufSize ];
     // 'strerror_r' is the thread-safe version of 'strerror'.
-    // Assuming GNU implementation, which returns a char*.
+
+#   if defined(__FreeBSD__) \
+    || (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && !_GNU_SOURCE
+    int value = strerror_r( e, buf, sizeof( buf ) );
+    if ( value == 0 )
+    {
+        return buf;
+    }
+    else              
+    {
+        // If strerror_r fails, it sets 'errno'.  This seems like a race
+        // condition, defeating the thread-safety of strerror_R,
+        // but we'll try our best to interpret it.
+        value = strerror_r( errno, buf, sizeof( buf ) );
+        if ( value == 0 ) return buf;
+        else              return "unknown errno";
+    }
+#   else // GNU-specific.
     char const* value = strerror_r( e, buf, sizeof( buf ) );
-    return std::string( value );
+    return value; // 'value' may not be 'buf'.
+#   endif
 }
 
 } // End local namespace.
@@ -152,7 +172,7 @@ void test( int argc, char* argv[] )
     cout << "test1::test: enter" << endl;
 
     // Note: Stack size of 2048 is too low for x86-64 and clang++ 3.1.
-    enum { kStackSize = 4096U };
+    enum { kStackSize = 8192U }; // 4096U };
     char stack_func1[ kStackSize ];
     char stack_func2[ kStackSize ];
 
@@ -170,7 +190,7 @@ void test( int argc, char* argv[] )
 
     cout << "test1::test: swap_context( uctx_main, uctx_func2 )" << endl;
     swap_context( uctx_main, uctx_func2 );
-    cout << "test1::test: exit" << endl;
+    cout << "test1::test: exit" << endl; // FIXME: We don't get here on PC-BSD 9.
 }
 
 } // End namespace 'test1'.
