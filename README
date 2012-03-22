@@ -36,13 +36,36 @@ http://www.freebsd.org/doc/en/articles/custom-gcc/article.html
 
 ---
 
+PC-BSD 9: Install git:
 # echo /usr/ports/*/*git*
-# cd /usr/ports/devel/git
-# make install
+# cd /usr/ports/devel/git ; make install
+
+See notes in 2012-03-14 below for configuration of git and GitHub.
 
 ---
 
+See notes in 2012-03-14 below for configuration of vim.
 
+---
+
+# echo /usr/ports/*/*subversion*
+# cd /usr/ports/devel/subversion ; make install
+
+---
+
+PC-BSD 9: Install grin:
+# cd /usr/ports/devel/py-setuptools ; make install
+# easy-install ;; This doesn't work.  What else?
+
+---
+
+PC-BSD 9: Install Valgrind:
+# cd /usr/ports/devel/valgrind; make install
+;; Fails due to problematic dependencies.
+
+---
+
+PC-BSD 9: Install Boost C++ libraries:
 
 ===============================================================================
 
@@ -53,21 +76,22 @@ $ dpkg -s <packagename>  ;; Info about installed package.
 Application           DebPackage           PortsName
                                            /usr/ports/
 -----------           ----------           ---------
-a2ps                  a2ps
+a2ps                  a2ps                 (pre-installed)
 git                   git-core             devel/git
                       git-gui
                       git-doc
 gvim                  vim-gnome            (pre-installed)
 gcc                   gcc                  lang/gcc[##]
-g++                   g++
+g++                   g++                  (part of lang/gcc[##])
+grin                                       devel/py-setuptools
 Exuberant C-tags      exuberant-ctags
 gnuplot               gnuplot
 graphviz              graphviz
 Erlang                erlang-base
 Firefox               firefox
-Subversion            subversion
-tree                  tree
-valgrind              valgrind
+Subversion            subversion           devel/subversion
+tree                  tree                 sysutils/tree
+valgrind              valgrind             devel/valgrind
 
 ---
 
@@ -131,7 +155,7 @@ $ cd ~/thirdparty/boost_versions/boost_1_49_0/tools/build/v2
 $ ./bootstrap.sh
 ;; Note: Must use ${HOME} rather than ~.
 $ ./b2 install --prefix=${HOME}/thirdparty/boost_versions/boost_1_49_0_boost_build
-$ ln -s ~/thirdparty/boost_versions/boost_1_49_0_boost_build boost_build
+$ ln -s ~/thirdparty/boost_versions/boost_1_49_0_boost_build ~/thirdparty/boost_build
 ;; Add b2 and bjam to the PATH env var:
 $ vim ~/.bashrc
 ;; Add this line to ~/.bashrc:
