@@ -8,17 +8,57 @@ Distributed under the Apache License, Version 2.0.
 http://www.apache.org/licenses/LICENSE-2.0)
 -------------------------------------------------------------------------------
 
+===============================================================================
+
+2012-03-22 Thu
+PC-BSD 9: Set up ports:
+References:
+http://www.freebsd.org/doc/en_US.ISO8859-1/books/handbook/ports-using.html
+
+First time only:
+# cd /var/db/portsnap
+# portsnap fetch
+# portsnap extract
+
+Thereafter:
+# portsnap update
+
+---
+
+PC-BSD 9: Use newer version of GCC and binutils:
+References:
+http://www.freebsd.org/doc/en/articles/custom-gcc/article.html
+
+# cd /usr/ports/devel/binutils && make install
+   no   NLS
+   YES  LIBSIGSEVG
+# cd /usr/ports/lang/gcc47 && make install
+
+---
+
+# echo /usr/ports/*/*git*
+# cd /usr/ports/devel/git
+# make install
+
+---
+
+
+
+===============================================================================
+
 2012-03-14 Wed
 $ dpkg --get-selections
 $ dpkg -s <packagename>  ;; Info about installed package.
 
-Application           DebPackage
------------           ----------
+Application           DebPackage           PortsName
+                                           /usr/ports/
+-----------           ----------           ---------
 a2ps                  a2ps
-git                   git-core
+git                   git-core             devel/git
                       git-gui
                       git-doc
-gvim                  vim-gnome
+gvim                  vim-gnome            (pre-installed)
+gcc                   gcc                  lang/gcc[##]
 g++                   g++
 Exuberant C-tags      exuberant-ctags
 gnuplot               gnuplot
@@ -39,6 +79,14 @@ $ git config --global user.email "your_email@youremail.com"
 Configure git for GitHub:
 $ git config --global github.user <github_username>
 $ git config --global github.token <github_token> ;; See GitHub->AccountSettings.
+
+Configure GitHub for us:
+$ ssh-keygen -t rsa -C "your_email@youremail.com"
+o  Enter your passphrase.
+o  Add to GitHub.com (see https://github.com/settings/ssh).
+o  $ ssh-add
+
+Clone our repo:
 $ git clone git@github.com:jpmaloney/basic.git
 
 ---
