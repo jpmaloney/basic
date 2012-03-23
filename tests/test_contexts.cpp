@@ -7,6 +7,9 @@
 // http://linux.die.net/man/3/errno
 // http://linux.die.net/man/3/strerror_r
 // http://pubs.opengroup.org/onlinepubs/7908799/xsh/signal.h.html
+// See 'Rationale' for discussion of the obsolescence of the *context functions:
+// http://pubs.opengroup.org/onlinepubs/009695399/functions/makecontext.html
+// 
 //
 // Copyright 2012 John P. Maloney
 // 
@@ -64,15 +67,57 @@ std::string string_from_errno( int e )
 namespace
 {
 
+std::ostream& operator<<( std::ostream& os, sigset_t const& rhs )
+{
+    return os << "<todo>";
+}
+
+std::ostream& operator<<( std::ostream& os, stack_t const& rhs )
+{
+    os << "("
+       << "ss_sp="     << ((void*)rhs.ss_sp)
+       << " ss_size="  << rhs.ss_size
+       << " ss_flags=" << rhs.ss_flags
+       << ")";
+    return os;
+}
+
+std::ostream& operator<<( std::ostream& os, mcontext_t const& rhs )
+{
+    return os << "<todo>";
+}
+
+std::ostream& operator<<( std::ostream& os, ucontext_t const& rhs )
+{
+    os << "("
+       << hex << ((void*)&rhs) << dec
+       << " uc_link="     << hex << ((void*)rhs.uc_link) << dec
+       << " uc_sigmask="  << rhs.uc_sigmask
+       << " uc_stack="    << rhs.uc_stack
+       << " uc_mcontext=" << rhs.uc_mcontext
+       << ")"
+       ;
+    return os;
+}
+
+} // End of local namespace.
+
+namespace
+{
+
 // get_context - Acquire the current context.
 ucontext_t get_context()
 {
     ucontext_t result;
+    memset( &result, 0, sizeof( result ) );
     auto const code = getcontext( &result );
     if ( code != 0 )
     {
         throw std::runtime_error( string_from_errno( errno ) );
     }
+    // TODO: Why is result.uc_stack.ss_sp equal to 0
+    // after getcontext returns on FreeBSD?
+    cout << "get_context: " << result << endl;
     return result;
 }
 
@@ -97,48 +142,15 @@ ucontext_t make_context( ucontext_t context, void (*func)(), int argc /* , ... *
 // A successful call to swapcontext does not return.
 void swap_context( ucontext_t& result, ucontext_t next )
 {
+    cout << "sc: enter: " << endl;
+    cout << "sc: enter: next: " << next << endl;
     auto const code = swapcontext( &result, &next );
     if ( code != 0 )
     {
         throw std::runtime_error( string_from_errno( errno ) );
     }
-}
-
-} // End of local namespace.
-
-namespace
-{
-
-std::ostream& operator<<( std::ostream& os, sigset_t const& rhs )
-{
-    return os << "<todo>";
-}
-
-std::ostream& operator<<( std::ostream& os, stack_t const& rhs )
-{
-    os << "("
-       << "ss_sp="     << ((void*)rhs.ss_sp)
-       << " ss_size="  << rhs.ss_size
-       << " ss_flags=" << rhs.ss_flags
-       << ")";
-    return os;
-}
-
-std::ostream& operator<<( std::ostream& os, mcontext_t const& rhs )
-{
-    return os << "<todo>";
-}
-
-std::ostream& operator<<( std::ostream& os, ucontext_t const& rhs )
-{
-    os << "("
-       << "uc_link="      << hex << ((void*)rhs.uc_link) << dec
-       << " uc_sigmask="  << rhs.uc_sigmask
-       << " uc_stack="    << rhs.uc_stack
-       << " uc_mcontext=" << rhs.uc_mcontext
-       << ")"
-       ;
-    return os;
+    cout << "sc: exit: next: " << next << endl;
+    cout << "sc: exit: result: " << result << endl;
 }
 
 } // End of local namespace.
@@ -154,6 +166,9 @@ ucontext_t uctx_main, uctx_func1, uctx_func2;
 extern "C" void func1()
 {
     cout << "func1: enter" << endl;
+    cout << "func1: uctx_main:  " << uctx_main << endl;
+    cout << "func1: uctx_func1: " << uctx_func1 << endl;
+    cout << "func1: uctx_func2: " << uctx_func2 << endl;
     cout << "func1: swap_context( uctx_func1, uctx_func2 )" << endl;
     swap_context( uctx_func1, uctx_func2 );
     cout << "func1: exit" << endl;
@@ -176,13 +191,18 @@ void test( int argc, char* argv[] )
     char stack_func1[ kStackSize ];
     char stack_func2[ kStackSize ];
 
+    uctx_main = get_context();
+    cout << "test1::test: uctx_main: " << uctx_main << endl;
+
     uctx_func1 = get_context();
+    cout << "test1::test: uctx_func1: " << uctx_func1 << endl;
     uctx_func1.uc_stack.ss_sp = stack_func1;
     uctx_func1.uc_stack.ss_size = sizeof( stack_func1 );
     uctx_func1.uc_link = &uctx_main;
     uctx_func1 = make_context( uctx_func1, func1, 0 );
 
     uctx_func2 = get_context();
+    cout << "test1::test: uctx_func2: " << uctx_func2 << endl;
     uctx_func2.uc_stack.ss_sp = stack_func2;
     uctx_func2.uc_stack.ss_size = sizeof( stack_func2 );
     uctx_func2.uc_link = ( argc > 1 ) ? 0 : &uctx_func1;
