@@ -4,5 +4,7 @@
 # (See accompanying file LICENSE_2_0 or copy at
 # http://www.apache.org/licenses/LICENSE-2.0)
 
+exe boost_example : boost_example.cpp /boost//headers ;
+exe boost_example_lib : boost_example_lib.cpp /boost//regex ;
 exe test_contexts : test_contexts.cpp ;
 

@@ -5,8 +5,8 @@
 // http://www.apache.org/licenses/LICENSE-2.0)
 //
 // To build:
-//     $ g++ -I ~/thirdparty/boost \
-//         boost_example_lib.cpp -o boost_example_lib \
+//     $ g++ -I ~/thirdparty/boost 
+//         boost_example_lib.cpp -o boost_example_lib 
 //         ~/thirdparty/boost/stage/lib/libboost_regex.a
 //
 // To run:
