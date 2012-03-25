@@ -202,25 +202,26 @@ $ sudo ln -sf ~/llvm/llvm/tools/libcxx/include /usr/include/c++/v1
 $ sudo ln -sf ~/llvm/llvm/tools/libcxxabi/include/cxxabi.h /usr/include/c++/v1/cxxabi.h
 $ cd ~/llvm/llvm/tools/libcxx/lib
 $ ./buildit    ;; This builds ~/llvm/llvm/tools/libcxx/lib/libc++.so.1.0
+               ;; Note: On FreeBSD, ./buildit is not ready for prime time:
+               ;; http://permalink.gmane.org/gmane.comp.compilers.clang.devel/19493
 $ sudo ln -sf ~/llvm/llvm/tools/libcxx/lib/libc++.so.1.0 /usr/lib/libc++.so.1.0
 $ sudo ln -sf /usr/lib/libc++.so.1.0 /usr/lib/libc++.so.1
 $ sudo ln -sf /usr/lib/libc++.so.1 /usr/lib/libc++.so
 
-Configure and build:
-First time:
+Configure and build (first time only):
 $ cd ~/llvm
 $ mkdir build ; cd build
 $ ../llvm/configure --enable-optimized
-$ make -j4  ;; -j4 means "use 4 jobs".
+$ make -j4  ;; -j4 means "use 4 jobs".  Use 'gmake' on FreeBSD.
 ;; Add LLVM/clang to PATH env var:
 $ vim ~/.bashrc
-;; Add this line to ~/.bashrc:
+;; Linux: Add this line to ~/.bashrc:
 export PATH=${PATH}:${HOME}/llvm/build/Release+Asserts/bin
 
-Thereafter:
+Configure and build (thereafter):
 $ cd ~/llvm/build
-$ make update
-$ make -j4
+$ make update  ;; Use 'gmake' on FreeBSD.
+$ make -j4     ;; Use 'gmake' on FreeBSD.
 
 Run clang:
 $ cd ~/basic
