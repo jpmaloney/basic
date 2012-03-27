@@ -14,6 +14,8 @@ using gcc
     : # <cxxflags>-std=c++0x  # G++ 4.2 is not ready for -std=c++0x.
     ;
 
+if $(gcc47exists)
+{
 # Run as: $ b2 gcc-4.7
 using gcc 
     : 4.7 # std0x
@@ -23,6 +25,7 @@ using gcc
       # <dll-path>"/usr/local/lib/gcc47" # FIXME: use of absolute pathname.
     : # -Wl,-rpath -Wl,"/usr/local/lib/gcc47" # FIXME: use of absolute pathname.
     ;
+}
 
 using clang
     :
