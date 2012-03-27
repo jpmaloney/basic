@@ -1,0 +1,25 @@
+# Copyright 2012 John P. Maloney
+#
+# Distributed under the Apache License, Version 2.0.
+# (See accompanying file LICENSE_2_0 or copy at
+# http://www.apache.org/licenses/LICENSE-2.0)
+
+using gcc 
+    :      # std0x
+    : "/usr/local/bin/g++47"   # FIXME: use of absolute pathname.
+    : <cxxflags>-std=gnu++0x
+      <hardcode-dll-paths>true 
+      <dll-path>"/usr/local/lib/gcc47" # FIXME: use of absolute pathname.
+#    : -Wl,-rpath -Wl,"/usr/local/lib/gcc47" # FIXME: use of absolute pathname.
+    ;
+
+using clang
+    :
+    :
+    : <cxxflags>-std=c++0x -stdlib=libc++
+    ;
+
+project user-config ;
+
+use-project boost : /home/jmaloney/thirdparty/boost ; # FIXME: use of absolute pathname.
+

@@ -4,7 +4,18 @@
 # (See accompanying file LICENSE_2_0 or copy at
 # http://www.apache.org/licenses/LICENSE-2.0)
 
+project
+    : source-location .
+    : requirements
+#      <hardcode-dll-paths>true 
+#      <dll-path>"/usr/local/lib/gcc47" # FIXME: use of absolute pathname.
+    ;
+
 exe boost_example : boost_example.cpp /boost//headers ;
-exe boost_example_lib : boost_example_lib.cpp /boost//regex ;
+exe boost_example_lib 
+    : boost_example_lib.cpp /boost//regex
+    : <hardcode-dll-paths>true 
+      <dll-path>"/usr/local/lib/gcc47" # FIXME: use of absolute pathname. 
+    ;
 exe test_contexts : test_contexts.cpp ;
 

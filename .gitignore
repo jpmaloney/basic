@@ -9,6 +9,10 @@
 *.out
 *.swp
 
+delme.*
+
+user-config.jam
+
 bin/
 
 boost_example
