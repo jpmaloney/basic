@@ -4,3 +4,5 @@
 # (See accompanying file LICENSE_2_0 or copy at
 # http://www.apache.org/licenses/LICENSE-2.0)
 
+path-constant TOP : . ;
+

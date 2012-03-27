@@ -4,13 +4,17 @@
 # (See accompanying file LICENSE_2_0 or copy at
 # http://www.apache.org/licenses/LICENSE-2.0)
 
+# FIXME: use of absolute pathname.
+path-constant Gpp47Path : "/usr/local/bin/g++47" ;
+path-constant BoostRoot : "/home/jmaloney/thirdparty/boost" ;
+
 using gcc 
-    :      # std0x
-    : "/usr/local/bin/g++47"   # FIXME: use of absolute pathname.
-    : <cxxflags>-std=gnu++0x
-      <hardcode-dll-paths>true 
-      <dll-path>"/usr/local/lib/gcc47" # FIXME: use of absolute pathname.
-#    : -Wl,-rpath -Wl,"/usr/local/lib/gcc47" # FIXME: use of absolute pathname.
+    : # std0x
+    : # $(Gpp47Path)   
+    : <cxxflags>-std=c++0x
+      # <hardcode-dll-paths>true 
+      # <dll-path>"/usr/local/lib/gcc47" # FIXME: use of absolute pathname.
+    : # -Wl,-rpath -Wl,"/usr/local/lib/gcc47" # FIXME: use of absolute pathname.
     ;
 
 using clang
@@ -21,5 +25,5 @@ using clang
 
 project user-config ;
 
-use-project boost : /home/jmaloney/thirdparty/boost ; # FIXME: use of absolute pathname.
+use-project boost : $(BoostRoot) ;
 
