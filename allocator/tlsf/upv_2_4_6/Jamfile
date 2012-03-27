@@ -1,0 +1,27 @@
+# Copyright 2012 John P. Maloney
+#
+# Distributed under the Apache License, Version 2.0.
+# (See accompanying file LICENSE_2_0 or copy at
+# http://www.apache.org/licenses/LICENSE-2.0)
+
+path-constant BaseDir : $(ThirdPartyRoot)/allocator/tlsf/upv_2_4_6/TLSF-2.4.6 ;
+
+project tlsf
+    : source-location $(BaseDir)/src
+    : requirements
+      <include>$(BaseDir)/src
+
+      <define>TLSF_USE_LOCKS=1
+      <define>TLSF_STATISTIC=1
+      <define>USE_MMAP=1
+      <define>USE_SBRK=1
+    ;
+
+lib tlsf : tlsf.c ;
+
+exe test : ../examples/test.c tlsf ;
+exe test1 : ../examples/test1.c tlsf ;
+exe test2 : ../examples/test2.c tlsf ;
+exe test3 : ../examples/test3.c tlsf ;
+exe test4 : ../examples/test4.c tlsf ;
+
