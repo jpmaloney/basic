@@ -1,0 +1,88 @@
+# README
+#
+# Copyright 2012 John P. Maloney
+#
+# Distributed under the Apache License, Version 2.0.
+# (See accompanying file LICENSE_2_0 or copy at
+# http://www.apache.org/licenses/LICENSE-2.0)
+
+2012-Mar-26
+
+Introduction
+------------
+
+I used the Two-Level Segregated Fit (TLSF) allocator in an embedded Linux (kernel 2.6) application a couple of years ago.  The built-in GLIBC allocator exhibited a strange behavior wherein the process's virtual address space was gradually exhausted while the application leaked no memory.  The TLSF allocator did not have this problem, and was satisfactory in all other ways.
+
+
+Status of TLSF source code maintenance
+--------------------------------------
+
+Since I last used the TLSF allocator, I have seen multiple websites hosting TLSF in one form or another.  I am unclear on the exact relationship of these sites, but here's what I know.
+
+Links:
+o OCERA.org,
+  http://www.ocera.org/download/distributions/partialrel/tlsf-1.4.html
+o Universidad Politécnica de Valencia (UPV),
+  http://www.gii.upv.es/tlsf/
+o baisoku.org,
+  http://tlsf.baisoku.org/
+
+I had thought I originally found TLSF at the OCERA site, but I see that the UPV implementation has SBRK and MMAP support, which I definitely recall seeing and using.
+
+In terms of lineage, I think the UPV code is a continuation of the original OCERA code.  I think the Baisoku code is a "cleanroom" implementation of TLSF based on the paper, "Dynamic storage allocation for real-time embedded systems", by Masmano, Ripoll, and Crespo, of UPV.
+
+---
+
+OCERA implementation:
+Latest release: tlsf-1.4, 2005-02-23, 307 KB.
+From the file README:
+TLSF Memory Storage allocator implementation.
+Version 1.4 March 2004
+Authors: Miguel Masmano, Ismael Ripoll, Jorge Real, & Alfons Crespo.
+Copyright UPVLC, OCERA Consortium.
+[snip]
+---
+
+UPV implementation:
+Latest release: TLSF-2.4.6.
+From the file README:
+TLSF Memory Storage allocator implementation.
+Version 2.4.6 Sept 2009
+Authors: Miguel Masmano, Ismael Ripoll & Alfons Crespo.
+Copyright UPVLC, OCERA Consortium.
+[snip]
+The version 2.4 can use the functions SBRK and MMAP to _automatically_
+growing the memory pool, before running out of memory.
+
+---
+
+Baisoku implementation:
+Latest release, tlsf-2.0, 2011-10-20.
+From the file Readme.txt:
+Two Level Segregated Fit memory allocator implementation.
+Written by Matthew Conte (matt@baisoku.org).
+[snip]
+This code was written to the TLSF 1.4 spec and documentation found at:
+
+        http://rtportal.upv.es/rtmalloc/allocators/tlsf/index.shtml
+
+It also uses the TLSF 2.0 improvement to shrink the per-block overhead
+from 8 to 4 bytes.
+[snip]
+Caveats
+-------
+* Currently, assumes architecture can make 4-byte aligned accesses
+* Not designed to be thread safe; the user must provide this
+[snip]
+2011/10/20 - v2.0
+   * 64-bit support
+   * More compiler intrinsics for ffs/fls
+   * ffs/fls verification during pool creation in debug builds
+
+
+ 
+  
+#
+# end
+#
+
