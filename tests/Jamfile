@@ -17,5 +17,8 @@ exe boost_example_lib
     : <hardcode-dll-paths>true 
       <dll-path>"/usr/local/lib/gcc47" # FIXME: use of absolute pathname. 
     ;
+exe read_elf64 : read_elf64.cpp /boost//headers /boost//system ;
 exe test_contexts : test_contexts.cpp ;
+exe test_either : test_either.cpp ;
+
 

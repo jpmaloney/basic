@@ -10,6 +10,45 @@ http://www.apache.org/licenses/LICENSE-2.0)
 
 ===============================================================================
 
+2012-04-04 Wed
+References:
+http://gcc.gnu.org/onlinedocs/gcc/Debugging-Options.html#Debugging-Options
+
+$ gcc -print-file-name=libc
+$ gcc -print-search-dirs
+$ gcc -print-sysroot
+$ gcc -print-sysroot-headers-suffix
+$ gcc -dumpmachine
+$ gcc -dumpversion
+$ gcc -dumpspecs
+
+---
+
+References:
+http://projects.gnome.org/nemiver/
+
+$ mkdir -p ~/thirdparty/nemiver ; cd ~/thirdparty/nemiver
+$ git clone git://git.gnome.org/nemiver nemiver.git
+
+---
+
+References:
+http://www.zero-bugs.com/2.0/product_intro.html
+http://zerobugs.codeplex.com/
+http://zerobugs.codeplex.com/documentation
+
+$ sudo apt-get install flex gtkmm-2.4 libatomic-ops-dev libelf-dev libgtksourceview2.0-dev
+$ export BOOST_ROOT=~/thirdparty/boost
+$ mkdir -p ~/thirdparty/zerobugs ; cd ~/thirdparty/zerobugs
+;; Download zerobugs-NNNNN.zip from codeplex.com.
+$ mv ~/Downloads/zerobugs-NNNNN.zip .
+$ unzip zerobugs-NNNNN.zip
+$ chmod +x ./build
+$ ./build --help
+$ ./build
+
+===============================================================================
+
 2012-03-22 Thu
 PC-BSD 9: Set up ports:
 References:
@@ -83,16 +122,22 @@ git                   git-core             devel/git
 gvim                  vim-gnome            (pre-installed)
 gcc                   gcc                  lang/gcc[##]
 g++                   g++                  (part of lang/gcc[##])
+ddd                   ddd
+nemiver               nemiver
 grin                                       devel/py-setuptools
 Exuberant C-tags      exuberant-ctags
+Font Manager (gnome)  font-manager
 gnuplot               gnuplot
 graphviz              graphviz
 Erlang                erlang-base
 Firefox               firefox
 Subversion            subversion           devel/subversion
+Mercurial             mercurial
 tree                  tree                 sysutils/tree
 valgrind              valgrind             devel/valgrind
 
+---
+$ sudo apt-get install console-terminus ttf-dejavu ttf-droid ttf-inconsolata xfonts-terminus
 ---
 
 Git setup:
