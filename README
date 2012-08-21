@@ -9,6 +9,76 @@ http://www.apache.org/licenses/LICENSE-2.0)
 -------------------------------------------------------------------------------
 
 ===============================================================================
+2012-08-21 Tue
+
+Updated instructions on building clang/LLVM.
+
+===============================================================================
+2012-07-14 Sat
+
+
+Boost C++ libraries
+
+Instructions verified on:
+  * Linux Mint 12 Intel64/AMD64
+  * gcc 4.6.1
+
+Install some packages:
+Library               DebPackage
+-------               ----------
+bzip2                 libbz2-dev
+python-dev            python-dev
+
+Check for presence of packages:
+(Debian)
+$ dpkg --get-selections | grep bzip2
+$ dpkg --get-selections | grep python-dev
+
+Download the Boost C++ libraries:
+$ cd ~
+$ mkdir -p ~/thirdparty/boost_versions ; cd ~/thirdparty/boost_versions
+$ wget http://downloads.sourceforge.net/project/boost/boost/1.50.0/boost_1_50_0.tar.bz2
+$ tar -xvf boost_1_50_0.tar.bz2
+
+Make a symbolic link to the Boost C++ libraries:
+$ cd ~/thirdparty
+$ ln -sfnv ~/thirdparty/boost_versions/boost_1_50_0 ~/thirdparty/boost
+
+Verify that Boost header files are usable (after "git clone" above):
+$ cd ~/basic/tests
+$ g++ -I ~/thirdparty/boost boost_example.cpp -o boost_example
+$ echo 1 2 3 | ./boost_example
+
+Build the b2 (aka bjam) Boost.Build application:
+$ cd ~/thirdparty/boost_versions/boost_1_50_0/tools/build/v2
+$ ./bootstrap.sh
+;; Note: Must use ${HOME} rather than ~.
+$ ./b2 install --prefix=${HOME}/thirdparty/boost_versions/boost_1_50_0_boost_build
+$ ln -sfnv ~/thirdparty/boost_versions/boost_1_50_0_boost_build ~/thirdparty/boost_build
+;; Add b2 and bjam to the PATH env var:
+$ vim ~/.bashrc
+;; Add this line to ~/.bashrc:
+export PATH=${PATH}:${HOME}/thirdparty/boost_build/bin
+
+Build the Boost binary libraries:
+;; Note: My already-existing ~/user-config.jam file interferes with this step,
+;; so I temporarily rename it.
+$ mv ~/user-config.jam ~/user-config.jam.save    ;; Save my ~/user-config.jam.
+$ cd ~/thirdparty/boost_versions/boost_1_50_0
+$ b2 toolset=gcc stage
+;; If clang++ is on the PATH, you can try this:
+$ b2 toolset=clang stage
+$ mv ~/user-config.jam.save ~/user-config.jam    ;; Restore my ~/user-config.jam.
+
+Verify that Boost binary libraries are usable (after "git clone" and "b2 ..." above):
+$ cd ~/basic/tests
+$ g++ -I ~/thirdparty/boost boost_example_lib.cpp -o boost_example_lib \
+~/thirdparty/boost/stage/lib/libboost_regex.a
+$ ./boost_example_lib
+
+Setup Boost.Build:
+$ ln -sf ~/basic/user-config.jam ~/user-config.jam
+===============================================================================
 
 2012-04-04 Wed
 References:
@@ -229,6 +299,10 @@ $ svn co http://llvm.org/svn/llvm-project/llvm/trunk llvm
 clang:
 $ cd ~/llvm/llvm/tools
 $ svn co http://llvm.org/svn/llvm-project/cfe/trunk clang
+
+clang tools:
+$ cd ~/llvm/llvm/tools/clang/tools
+$ svn co http://llvm.org/svn/llvm-project/clang-tools-extra/trunk extra
 
 compiler-rt:
 $ cd ~/llvm/llvm/projects

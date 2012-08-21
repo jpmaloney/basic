@@ -8,12 +8,14 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+#include <string>
 #include <vector>
 #include "extension.hpp"
 
 using std::array;
 using std::cout;
 using std::endl;
+using std::string;
 using std::vector;
 
 namespace
@@ -259,38 +261,164 @@ void main( Sequence s )
 namespace example6
 {
 
-auto const desc = "Compile-time substitution via function object";
+auto const desc = "Compile-time substitution via argument dependent lookup (ADL)";
 
 namespace library
 {
 
-    template<typename Func>
-    void test( Func f, int i )
+    template<typename Arg>
+    void test( Arg a )
     {
-        cout << "example6: fx( " << i << " ) -> " << f( i ) << endl;
+        // In all cases, this function calls the function 'f' without
+        // a namespace specifier.
+        cout << "example6: fx( " << a << " ) -> " << f( a ) << endl;
     }
+
+    //----------------------------
+
+    string f( int i ) { return __PRETTY_FUNCTION__; }
+
+    //----------------------------
+
+    class arg_lib_only
+    {
+    public:
+        int i;
+    };
+
+    std::ostream& operator<<( std::ostream& os, arg_lib_only const& rhs )
+    {
+        return os << __PRETTY_FUNCTION__;
+    }
+
+    string f( arg_lib_only a )
+    {
+        return __PRETTY_FUNCTION__;
+    }
+
+    //----------------------------
+
+    class arg_both
+    {
+    public:
+        int i;
+    };
+
+    std::ostream& operator<<( std::ostream& os, arg_both const& rhs )
+    {
+        return os << __PRETTY_FUNCTION__;
+    }
+
+    string f( arg_both a )
+    {
+        return __PRETTY_FUNCTION__;
+    }
+
+    //----------------------------
+
+    class arg_lib_func_lib
+    {
+    public:
+        int i;
+    };
+
+    std::ostream& operator<<( std::ostream& os, arg_lib_func_lib const& rhs )
+    {
+        return os << __PRETTY_FUNCTION__;
+    }
+
+    string f( arg_lib_func_lib a )
+    {
+        return __PRETTY_FUNCTION__;
+    }
+
+    //----------------------------
+
+    class arg_lib_func_both
+    {
+    public:
+        int i;
+    };
+
+    std::ostream& operator<<( std::ostream& os, arg_lib_func_both const& rhs )
+    {
+        return os << __PRETTY_FUNCTION__;
+    }
+
+    string f( arg_lib_func_both a )
+    {
+        return __PRETTY_FUNCTION__;
+    }
+
 
 } // End namespace library.
 
 namespace application
 {
 
-    class f_increment
+    string f( int i ) { return __PRETTY_FUNCTION__; }
+
+    //----------------------------
+
+    class arg_app_only
     {
     public:
-        int operator()( int i ) const { return i + 1; }
+        int i;
     };
 
-    class f_double
+    std::ostream& operator<<( std::ostream& os, arg_app_only const& rhs )
+    {
+        return os << __PRETTY_FUNCTION__;
+    }
+
+    string f( arg_app_only a )
+    {
+        return __PRETTY_FUNCTION__;
+    }
+
+    //----------------------------
+
+    class arg_both
     {
     public:
-        int operator()( int i ) const { return i + i; }
+        int i;
     };
+
+    std::ostream& operator<<( std::ostream& os, arg_both const& rhs )
+    {
+        return os << __PRETTY_FUNCTION__;
+    }
+
+    string f( arg_both a )
+    {
+        return __PRETTY_FUNCTION__;
+    }
+
+    //----------------------------
+
+    // class arg_lib_func_both is defined in the library.
+
+    std::ostream& operator<<( std::ostream& os, library::arg_lib_func_both const& rhs )
+    {
+        return os << __PRETTY_FUNCTION__;
+    }
+
+    string f( library::arg_lib_func_both a )
+    {
+        return __PRETTY_FUNCTION__;
+    }
+
+    //----------------------------
 
     void test( int i )
     {
-        library::test( f_increment(), i );
-        library::test( f_double(), i );
+        library::test( i );
+        library::test( library::arg_lib_only{ i } );
+        library::test( application::arg_app_only{ i } );
+        library::test( library::arg_both{ i } );
+        library::test( application::arg_both{ i } );
+        library::test( library::arg_lib_func_lib{ i } );
+        library::test( library::arg_lib_func_both{ i } );
     }
 
 } // End namespace application.
