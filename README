@@ -110,9 +110,13 @@ o  On github.com, click "*" tool, click "SSH keys",
 o  $ ssh -T git@github.com     ;; Verify connection.
 
 Clone our repo into directory ~/basic:
+(Reference on "git push" requiring username:
+ http://stackoverflow.com/questions/6565357/git-push-requires-username-and-password)
 $ mkdir -p ~/third-party/jpmaloney; cd ~/third-party/jpmaloney
-$ git clone https://github.com/jpmaloney/basic.git
-;; Obsolete?: $ git clone git@github.com:jpmaloney/basic.git
+$ git clone git@github.com:jpmaloney/basic.git
+;; Which to use?
+;; $ git clone https://github.com/jpmaloney/basic.git
+;; $ git clone git@github.com:jpmaloney/basic.git
 
 Configure git to sync with the GitHub repo:
 $ cd ~/third-party/jpmaloney/basic
