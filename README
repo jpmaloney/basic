@@ -1,12 +1,288 @@
 README
 
 -------------------------------------------------------------------------------
-Copyright 2012 John P. Maloney
+Copyright 2015 John P. Maloney
 
 Distributed under the Apache License, Version 2.0.
 (See accompanying file LICENSE_2_0 or copy at
 http://www.apache.org/licenses/LICENSE-2.0)
 -------------------------------------------------------------------------------
+
+
+
+===============================================================================
+2015-03-07 Sun
+
+
+Local computer:
+o Ubuntu 14.10 64-bit
+o Intel Core i7-4770 (Haswell)
+o gcc/g++ 4.9.1
+
+
+Install various Linux pages:
+
+DebPackage              YumPackage
+----------              ----------
+Ubuntu only:
+gnome-session-fallback
+synaptic
+debhelper
+
+Virtual machine guest only:
+dkms
+build-essential
+
+Development:
+terminator
+vim-gnome
+tree
+valgrind
+subversion
+mercurial
+git-core
+git-gui
+git-doc
+cvs
+scons
+gcc
+g++
+ddd
+nemiver
+clang (3.5)
+lldb-3.5
+cpuid
+p7zip-full
+meld
+libbz2-dev
+python-dev
+libicu-dev
+lib1g-dev
+flex
+(gtkmm-3.0-1 needed by who?)
+libatomic-ops-dev
+libelf-dev
+a2ps
+exuberant-ctags
+
+Fonts:
+console-terminus
+ttf-dejavu
+fonts-droid
+fonts-inconsolata
+xfonts-terminus
+
+---
+
+Install grin:
+Reference: http://pypi.python.org/pypi/grin
+$ sudo apt-get install python-setuptools
+$ sudo easy_install grin
+
+---
+
+Revised instructions for GitHub setup
+
+Git setup:
+$ sudo apt-get install git-core git-gui git-doc
+$ git config --global user.name "Firstname Lastname"
+$ git config --global user.email "your_email@youremail.com"
+;; Note: the following is for git 2.0 or later:
+$ git config --global push.default simple
+
+Configure git for GitHub:
+$ git config --global github.user <github_username>
+
+Configure GitHub for us:
+Reference: https://help.github.com/articles/generating-ssh-keys
+$ ssh-keygen -t rsa -C "your_email@youremail.com"
+o  Enter your passphrase.  [Github recommends no passphrase.]
+
+Add to local ssh-agent:
+$ eval "$(ssh-agent -s)"
+$ ssh-add ~/.ssh/id_rsa
+
+Add to GitHub.com (see https://github.com/settings/ssh).
+$ gvim ~/.ssh/id_rsa.pub
+o  Select all & copy to clipboard.
+o  On github.com, click "*" tool, click "SSH keys",
+   click "Add SSH key", paste key, click "Add key".
+o  $ ssh -T git@github.com     ;; Verify connection.
+
+Clone our repo into directory ~/basic:
+$ mkdir -p ~/third-party/jpmaloney; cd ~/third-party/jpmaloney
+$ git clone https://github.com/jpmaloney/basic.git
+;; Obsolete?: $ git clone git@github.com:jpmaloney/basic.git
+
+Configure git to sync with the GitHub repo:
+$ cd ~/third-party/jpmaloney/basic
+$ git remote -v
+$ git remote add upstream https://github.com/jpmaloney/basic.git
+$ git remote -v    ;; Observe new 'upstream' repos.
+
+
+---
+
+
+Revised instructions for Boost 1.57.0 setup
+
+Reference: 
+http://www.boost.org/doc/libs/1_57_0/more/getting_started/unix-variants.html
+
+Install some packages used by some Boost libraries:
+Library             DebPackage
+-------             ----------
+bzip2               libbz2-dev
+python-dev          python-dev
+icu                 libicu-dev
+zlib                lib1g-dev
+$ sudo apt-get install libbz2-dev python-dev libicu-dev lib1g-dev
+
+Download and extract the Boost archive:
+$ mkdir p ~/third-party/boost/temp; cd ~/third-party/boost/temp
+$ wget http://downloads.sourceforge.net/project/boost/boost/1.57.0/boost_1_57_0.7z
+$ 7za x boost_1_57_0.7z
+
+Build and install Boost.Build:
+$ cd ~/third-party/boost/temp/boost_1_57_0/tools/build
+$ ./booststrap.sh
+;; Note: "-d+2" below means "show commands".
+;; Note: Don't use "~" for home directory.
+$ ./b2 install \
+--prefix=${HOME}/third-party/boost/boost_build_1_57_0 
+;; Append this line to ~/.bashrc:
+export PATH=${PATH}:${HOME}/third-party/boost/boost_build_1_57_0/bin
+;; Update environment variables:
+$ source ~/.bashrc
+$ b2 --version        ;; Verify b2 is on PATH.
+
+Build and install Boost:
+$ cd ~/third-party/boost/temp/boost_1_57_0
+$ ./bootstrap.sh --prefix=${HOME}/third-party/boost/boost_1_57_0
+$ b2 -d+2 cxxflags=-std=c++14 toolset=gcc install \
+--prefix=${HOME}/third-party/boost/boost_1_57_0
+
+
+
+
+
+
+
+
+
+
+
+
+
+Scheme for supporting multiple versions of Boost and Boost.Build
+
+Motivation:
+* We want to choose one of several versions of Boost to use.
+* We want to choose one of several versions of Boost.Build to use.
+* We may want to mix and match versions of Boost and Boost.Build.
+
+Directory structure:
+
+;; Assume that our Boost stuff lives in this directory:
+~/thirdparty/
+
+;; We soft-link boost and boost_build to the desired versions
+;; of Boost and Boost.Build.
+;; The boost directory contains directories like boost, doc, libs, and tools.
+;; The boost_build directory contains directories like ....
+~/thirdparty/boost/ ->       ~/thirdparty/boost_versions/boost_1_40_0
+~/thirdparty/boost_build/ -> ~/thirdparty/boost_versions/boost_1_40_0_boost_build
+
+;; The concrete Boost and Boost.Build files live in this directory:
+~/thirdparty/boost_versions/
+
+;; For example:
+~/thirdparty/boost_versions/boost_1_40_0/
+~/thirdparty/boost_versions/boost_1_40_0_boost_build/
+~/thirdparty/boost_versions/boost_1_49_0/
+~/thirdparty/boost_versions/boost_1_49_0_boost_build/
+~/thirdparty/boost_versions/boost_1_50_0/
+~/thirdparty/boost_versions/boost_1_50_0_boost_build/
+
+To change the preferred version of Boost:
+
+To change the preferred version of Boost.Build:
+
+
+---
+
+Getting started with Boost 1.40.0 C++ libraries with G++ 4.7
+
+Note: I am having problems getting Boost 1.40.0 and G++ 4.7 to work together.
+If you have G++ 4.7, consider using a more recent version of Boost.
+
+Install some packages:
+Library               DebPackage
+-------               ----------
+bzip2                 libbz2-dev
+python-dev            python-dev
+
+Download the Boost C++ libraries:
+$ cd ~
+$ mkdir -p ~/thirdparty/boost_versions ; cd ~/thirdparty/boost_versions
+$ wget http://downloads.sourceforge.net/project/boost/boost/1.40.0/boost_1_40_0.tar.bz2
+$ tar -xvf boost_1_40_0.tar.bz2
+
+Make a symbolic link to the Boost C++ libraries:
+$ cd ~/thirdparty
+$ ln -s ~/thirdparty/boost_versions/boost_1_40_0 ~/thirdparty/boost
+
+Verify that Boost header files are usable (after "git clone" above):
+$ cd ~/basic/tests
+$ g++ -I ~/thirdparty/boost boost_example.cpp -o boost_example
+$ echo 1 2 3 | ./boost_example
+
+Build bjam:
+;; This creates the file ~/thirdparty/boost_versions/boost_1_40_0/bjam.
+$ cd ~/thirdparty/boost_versions/boost_1_40_0
+$ ./bootstrap.sh
+
+Make a symbolic link to bjam:
+$ cd ~/thirdparty/boost_versions
+;; There is some fancy footwork to ensure that bjam can be found
+;; in the directory ~/thirdparty/boost_build/bin.
+$ mkdir -p boost_1_40_0_boost_build/bin
+$ ln -s ~/thirdparty/boost_versions/boost_1_40_0/bjam \
+  ~/thirdparty/boost_versions/boost_1_40_0_boost_build/bin/bjam
+$ ln -s ~/thirdparty/boost_versions/boost_1_40_0_boost_build ~/thirdparty/boost_build
+
+Add bjam to the PATH env var:
+$ vim ~/.bashrc
+;; Add this line to ~/.bashrc:
+export PATH=${PATH}:${HOME}/thirdparty/boost_build/bin
+;; Reload .bashrc:
+$ source ~/.bashrc
+
+Setup Boost.Build:
+$ cp ~/basic/user-config.jam.orig ~/user-config.jam
+;; Tweak ~/user-config.jam as needed.
+
+Apply patch to support G++ 4.7.
+;; Reference: https://svn.boost.org/trac/boost/ticket/6165
+;; Download the following patch in the "original format" to
+;; the directory ~/thirdparty/boost_versions/boost_1_40_0:
+;; https://svn.boost.org/trac/boost/attachment/ticket/6165/libstdcpp3.hpp.patch
+$ cd ~/thirdparty/boost_versions/boost_1_40_0
+$ patch ./boost/config/stdlib/libstdcpp3.hpp ./libstdcpp3.hpp.patch
+
+Build custom binaries:
+;; Note: Must use ${HOME} rather than ~.
+#$ cd ~/thirdparty/boost_versions/boost_1_40_0
+#$ ./bjam install --prefix=${HOME}/thirdparty/boost_versions/boost_1_40_0_boost_build
+
+$ cd ~/thirdparty/boost_versions/boost_1_40_0
+$ bjam toolset=gcc stage
+
+Verify that Boost binary libraries are usable (after "git clone" and "bjam ..." above):
+$ cd ~/basic/tests
+$ g++ -I ~/thirdparty/boost boost_example_lib.cpp -o boost_example_lib \
+~/thirdparty/boost/stage/lib/libboost_regex.a
+$ ./boost_example_lib
 
 
 ===============================================================================
