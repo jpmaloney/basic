@@ -20,7 +20,7 @@ o Intel Core i7-4770 (Haswell)
 o gcc/g++ 4.9.1
 
 
-Install various Linux pages:
+Install various Linux packages:
 
 DebPackage              YumPackage
 ----------              ----------
@@ -115,18 +115,16 @@ Clone our repo into directory ~/basic:
 $ mkdir -p ~/third-party/jpmaloney; cd ~/third-party/jpmaloney
 $ git clone git@github.com:jpmaloney/basic.git
 ;; Which to use?
-;; $ git clone https://github.com/jpmaloney/basic.git
-;; $ git clone git@github.com:jpmaloney/basic.git
+;; $ git clone https://github.com/jpmaloney/basic.git   ;; HTTPS
+;; $ git clone git@github.com:jpmaloney/basic.git       ;; SSH (preferred)
 
 Configure git to sync with the GitHub repo:
 $ cd ~/third-party/jpmaloney/basic
 $ git remote -v
-$ git remote add upstream https://github.com/jpmaloney/basic.git
+$ git remote add upstream git@github.com:jpmaloney/basic.git
 $ git remote -v    ;; Observe new 'upstream' repos.
 
-
 ---
-
 
 Revised instructions for Boost 1.57.0 setup
 
@@ -166,127 +164,20 @@ $ ./bootstrap.sh --prefix=${HOME}/third-party/boost/boost_1_57_0
 $ b2 -d+2 cxxflags=-std=c++14 toolset=gcc install \
 --prefix=${HOME}/third-party/boost/boost_1_57_0
 
-
-
-
-
-
-
-
-
-
-
-
-
-Scheme for supporting multiple versions of Boost and Boost.Build
-
-Motivation:
-* We want to choose one of several versions of Boost to use.
-* We want to choose one of several versions of Boost.Build to use.
-* We may want to mix and match versions of Boost and Boost.Build.
-
-Directory structure:
-
-;; Assume that our Boost stuff lives in this directory:
-~/thirdparty/
-
-;; We soft-link boost and boost_build to the desired versions
-;; of Boost and Boost.Build.
-;; The boost directory contains directories like boost, doc, libs, and tools.
-;; The boost_build directory contains directories like ....
-~/thirdparty/boost/ ->       ~/thirdparty/boost_versions/boost_1_40_0
-~/thirdparty/boost_build/ -> ~/thirdparty/boost_versions/boost_1_40_0_boost_build
-
-;; The concrete Boost and Boost.Build files live in this directory:
-~/thirdparty/boost_versions/
-
-;; For example:
-~/thirdparty/boost_versions/boost_1_40_0/
-~/thirdparty/boost_versions/boost_1_40_0_boost_build/
-~/thirdparty/boost_versions/boost_1_49_0/
-~/thirdparty/boost_versions/boost_1_49_0_boost_build/
-~/thirdparty/boost_versions/boost_1_50_0/
-~/thirdparty/boost_versions/boost_1_50_0_boost_build/
-
-To change the preferred version of Boost:
-
-To change the preferred version of Boost.Build:
-
-
 ---
 
-Getting started with Boost 1.40.0 C++ libraries with G++ 4.7
-
-Note: I am having problems getting Boost 1.40.0 and G++ 4.7 to work together.
-If you have G++ 4.7, consider using a more recent version of Boost.
-
-Install some packages:
-Library               DebPackage
--------               ----------
-bzip2                 libbz2-dev
-python-dev            python-dev
-
-Download the Boost C++ libraries:
-$ cd ~
-$ mkdir -p ~/thirdparty/boost_versions ; cd ~/thirdparty/boost_versions
-$ wget http://downloads.sourceforge.net/project/boost/boost/1.40.0/boost_1_40_0.tar.bz2
-$ tar -xvf boost_1_40_0.tar.bz2
-
-Make a symbolic link to the Boost C++ libraries:
-$ cd ~/thirdparty
-$ ln -s ~/thirdparty/boost_versions/boost_1_40_0 ~/thirdparty/boost
-
-Verify that Boost header files are usable (after "git clone" above):
-$ cd ~/basic/tests
-$ g++ -I ~/thirdparty/boost boost_example.cpp -o boost_example
-$ echo 1 2 3 | ./boost_example
-
-Build bjam:
-;; This creates the file ~/thirdparty/boost_versions/boost_1_40_0/bjam.
-$ cd ~/thirdparty/boost_versions/boost_1_40_0
-$ ./bootstrap.sh
-
-Make a symbolic link to bjam:
-$ cd ~/thirdparty/boost_versions
-;; There is some fancy footwork to ensure that bjam can be found
-;; in the directory ~/thirdparty/boost_build/bin.
-$ mkdir -p boost_1_40_0_boost_build/bin
-$ ln -s ~/thirdparty/boost_versions/boost_1_40_0/bjam \
-  ~/thirdparty/boost_versions/boost_1_40_0_boost_build/bin/bjam
-$ ln -s ~/thirdparty/boost_versions/boost_1_40_0_boost_build ~/thirdparty/boost_build
-
-Add bjam to the PATH env var:
-$ vim ~/.bashrc
-;; Add this line to ~/.bashrc:
-export PATH=${PATH}:${HOME}/thirdparty/boost_build/bin
-;; Reload .bashrc:
-$ source ~/.bashrc
-
-Setup Boost.Build:
-$ cp ~/basic/user-config.jam.orig ~/user-config.jam
-;; Tweak ~/user-config.jam as needed.
-
-Apply patch to support G++ 4.7.
-;; Reference: https://svn.boost.org/trac/boost/ticket/6165
-;; Download the following patch in the "original format" to
-;; the directory ~/thirdparty/boost_versions/boost_1_40_0:
-;; https://svn.boost.org/trac/boost/attachment/ticket/6165/libstdcpp3.hpp.patch
-$ cd ~/thirdparty/boost_versions/boost_1_40_0
-$ patch ./boost/config/stdlib/libstdcpp3.hpp ./libstdcpp3.hpp.patch
-
-Build custom binaries:
-;; Note: Must use ${HOME} rather than ~.
-#$ cd ~/thirdparty/boost_versions/boost_1_40_0
-#$ ./bjam install --prefix=${HOME}/thirdparty/boost_versions/boost_1_40_0_boost_build
-
-$ cd ~/thirdparty/boost_versions/boost_1_40_0
-$ bjam toolset=gcc stage
-
-Verify that Boost binary libraries are usable (after "git clone" and "bjam ..." above):
-$ cd ~/basic/tests
-$ g++ -I ~/thirdparty/boost boost_example_lib.cpp -o boost_example_lib \
-~/thirdparty/boost/stage/lib/libboost_regex.a
-$ ./boost_example_lib
+Verify GitHub/jpmaloney/basic and Boost:
+$ cd ~/third-party/jpmaloney/basic
+$ g++ --std=c++14 -I ~/third-party/boost/boost_1_57_0/include \
+  boost_example.cpp -o boost_example
+$ ./boost_example
+> 1 3 5 <ENTER>
+> <Ctrl-C>
+$ g++ --std=c++14 -I ~/third-party/boost/boost_1_57_0/include \
+  boost_example_lib.cpp -o boost_example_lib \
+  ~/third-party/boost/boost_1_57_0/lib/libboost_regex.a
+> Subject: Re: foobar <ENTER>
+> <Ctrl-C>
 
 
 ===============================================================================

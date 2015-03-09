@@ -11,6 +11,7 @@
 //
 // To run:
 //     $ ./boost_example_lib
+//     Subject: Re: foobar
 //
 // Reference:
 // http://www.boost.org/doc/libs/1_49_0/more/getting_started/unix-variants.html#id24
